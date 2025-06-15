@@ -1,0 +1,41 @@
+<div class="container">
+  @if (role() === 'ADMIN' && token() !== null) {
+    <h1 class="text-center">Welcome {{ firstName() | titlecase }}</h1>
+    <button class="btn btn-success" routerLink="/add-product">Add Product</button>
+    <button class="btn btn-warning" routerLink="/home">Home</button>
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">Image</th>
+        <th scope="col">Name</th>
+        <th scope="col">Price</th>
+        <th scope="col">Description</th>
+        <th scope="col">Action</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (product of products(); track $index) {
+          <tr>
+            <td>
+              <img [src]="product.image" alt="{{ product.name }}" width="100" />
+            </td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.price }}</td>
+            <td>
+              <button class="btn btn-primary btn-sm" [routerLink]="['/update-product', product.id]">Update</button>
+              <button
+                class="btn btn-danger btn-sm ms-3"
+                (click)="deleteProduct(product.id)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <h1 class="text-center">Page does not exist</h1>
+  }
+</div>

@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h2 class="">Ecommerce</h2>
+    </div>
+    <div class="col">
+      <app-search/>
+    </div>
+    <div class="col">
+      @if (isLoggedIn()) {
+        @if (role() === 'ADMIN') {
+          <h3>Welcome {{ firstName()}}</h3>
+          <button class="btn btn-warning" routerLink="/dashboard">Dashboard</button>
+          <button class="btn btn-success" (click)="onLogout()">Log out</button>
+        } @else {
+          <h3>Welcome {{ firstName() }} to our website</h3>
+          <button class="btn btn-success" (click)="onLogout()">Log out</button>
+        }
+      } @else {
+        <h3>Guest</h3>
+        <a routerLink="/login">Login</a>
+      }
+    </div>
+  </div>
+</div>
+<app-product-list/>
+

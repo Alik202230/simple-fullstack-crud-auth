@@ -1,0 +1,69 @@
+<div class="container">
+
+  @if (token() !== null && role() === 'ADMIN') {
+
+    <div class="row m-2">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-control">
+          <label class="col-form-label-sm">Name</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Product name"
+            name="name"
+            formControlName="name"
+          >
+        </div>
+        <div class="form-control">
+          <label class="col-form-label-sm">Description</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="description"
+            name="description"
+            formControlName="description"
+          >
+        </div>
+        <div class="form-control">
+          <label class="col-form-label-sm">Price</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Price"
+            name="price"
+            formControlName="price"
+          >
+        </div>
+        <div class="form-control">
+          <label class="col-form-label-sm">Quantity</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Quantity"
+            name="quantity"
+            formControlName="quantity"
+          >
+        </div>
+        <div class="form-control">
+          <label class="col-form-label-sm">Category</label>
+          <select
+            class="form-select form-select-sm"
+            formControlName="category"
+            name="category"
+          >
+            <option value="">Select Category</option>
+            @for (category of categoryOptions; track $index) {
+              <option [ngValue]="category">{{ category }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-control">
+          <input type="file" (change)="onFileChange($event)" multiple/>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Product</button>
+      </form>
+    </div>
+  } @else {
+    <h1 class="text-center">Page does not exist</h1>
+  }
+</div>
