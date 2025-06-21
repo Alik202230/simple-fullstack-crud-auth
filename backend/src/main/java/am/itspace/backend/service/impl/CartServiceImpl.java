@@ -35,14 +35,8 @@ public class CartServiceImpl implements CartService {
             .user(user.getUser())
             .build()));
 
-    // Add or update each item in the cart
-    Cart finalCart = cart;
     request.getItems().forEach(item ->
-        cartItemService.addOrUpdateCartItem(finalCart, item.getProductId(), item.getQuantity()));
-
-    // Refresh cart from DB to include up-to-date cart items
-    cart = cartRepository.findById(cart.getId())
-        .orElseThrow(() -> new RuntimeException("Cart not found"));
+        cartItemService.addOrUpdateCartItem(cart, item.getProductId(), item.getQuantity()));
 
     List<CartItemResponse> items = cart.getCartItems().stream()
         .map(CartItemConverter::toCartItemResponse)
