@@ -2,7 +2,6 @@ package am.itspace.backend.config;
 
 import am.itspace.backend.filter.JwtAuthenticationTokenFilter;
 import am.itspace.backend.security.JwtAuthenticationEntryPoint;
-import am.itspace.backend.service.impl.LogoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
