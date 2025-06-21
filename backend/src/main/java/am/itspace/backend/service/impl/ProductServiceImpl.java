@@ -31,8 +31,6 @@ public class ProductServiceImpl implements ProductService {
   @Value("${upload.image.path}")
   private String filePath;
 
-  @Value("${base.image.url}")
-  private String baseImageUrl;
 
   @Override
   public SaveProductResponse create(SaveProductRequest request) throws IOException {

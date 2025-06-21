@@ -8,16 +8,16 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
+  public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
     Map<String, String> errors = new HashMap<>();
     ex.getBindingResult().getAllErrors().forEach(error -> {
       String fieldName = ((FieldError) error).getField();
@@ -33,7 +33,8 @@ public class GlobalExceptionHandler {
       UsernamePasswordException.class,
       AuthorizationException.class,
       FileNotFountException.class,
-      ProductNotFoundException.class
+      ProductNotFoundException.class,
+      AccessDeniedException.class
   })
   public ResponseEntity<ErrorResponse> handleException(Exception exception) {
     return switch (exception) {
@@ -74,7 +75,7 @@ public class GlobalExceptionHandler {
         yield ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
       }
 
-      case  FileNotFountException ex -> {
+      case FileNotFountException ex -> {
         ErrorResponse errorResponse = new ErrorResponse(
             ex.getMessage(),
             HttpStatus.NOT_FOUND.value(),
@@ -84,7 +85,7 @@ public class GlobalExceptionHandler {
         yield ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
       }
 
-      case  ProductNotFoundException ex -> {
+      case ProductNotFoundException ex -> {
         ErrorResponse errorResponse = new ErrorResponse(
             ex.getMessage(),
             HttpStatus.NOT_FOUND.value(),
@@ -92,6 +93,16 @@ public class GlobalExceptionHandler {
             LocalDateTime.now()
         );
         yield ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+      }
+
+      case AccessDeniedException ex -> {
+        ErrorResponse errorResponse = new ErrorResponse(
+            ex.getMessage(),
+            HttpStatus.FORBIDDEN.value(),
+            HttpStatus.FORBIDDEN,
+            LocalDateTime.now()
+        );
+        yield ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
       }
 
       default -> {
@@ -104,5 +115,5 @@ public class GlobalExceptionHandler {
       }
     };
   }
-
 }
+

@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
 
   }
 
-  private void revokeAllUserTokens(User user) {
+  public void revokeAllUserTokens(User user) {
     List<Token> validUserTokens = this.tokenRepository.findAllValidTokensByUserId(user.getId());
     if (validUserTokens.isEmpty()) return;
     validUserTokens.forEach(token -> {
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     this.tokenRepository.saveAll(validUserTokens);
   }
 
-  private void saveUserToken(User user, String jwtToken) {
+  public void saveUserToken(User user, String jwtToken) {
     Token token = Token.builder()
         .user(user)
         .token(jwtToken)
