@@ -44,18 +44,17 @@ public class CartServiceImpl implements CartService {
     cart = cartRepository.findById(cart.getId())
         .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-    List<CartItemResponse> response = cart.getCartItems().stream()
+    List<CartItemResponse> items = cart.getCartItems().stream()
         .map(CartItemConverter::toCartItemResponse)
         .toList();
 
-    BigDecimal total = response.stream()
-        .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    BigDecimal total = CartUtil.calculateTotalPrice(items);
 
     return CartResponse.builder()
         .cartId(cart.getId())
         .userId(user.getUser().getId())
-        .items(response)
+        .items(items)
         .totalPrice(total)
         .build();
   }
