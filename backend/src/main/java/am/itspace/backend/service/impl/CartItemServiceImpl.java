@@ -45,7 +45,6 @@ public class CartItemServiceImpl implements CartItemService {
           .product(product)
           .quantity(quantity)
           .build();
-      if (cart.getCartItems() == null) cart.setCartItems(new ArrayList<>());
 
       this.cartItemRepository.save(cartItem);
       cart.getCartItems().add(cartItem);
@@ -56,11 +55,6 @@ public class CartItemServiceImpl implements CartItemService {
   @Override
   public void removeCartItem(Long productId, Cart cart) {
     cartItemRepository.removeProductFromCartByCartIdAndProductId(cart.getId(), productId);
-
-//    cartItemRepository.findByCartIdAndProductId(cart.getId(), productId)
-//        .ifPresent(cartItem -> {
-//          cartItemRepository.delete(cartItem);
-//          cart.getCartItems().remove(cartItem);
-//        });
+    cart.getCartItems().removeIf(item -> item.getProduct().getId().equals(productId));
   }
 }

@@ -1,5 +1,6 @@
 package am.itspace.backend.utils;
 
+import am.itspace.backend.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -71,7 +72,6 @@ public class JwtTokenUtil {
         .compact();
   }
 
-
   public String refreshToken(String token) {
     final Date createdDate = new Date();
     final Date expirationDate = calculateExpirationDate(createdDate);
@@ -87,7 +87,6 @@ public class JwtTokenUtil {
   }
 
   public boolean validateToken(String token, String email) {
-
     final String username = getUsernameFromToken(token);
     return (username.equals(email) && !isTokenExpired(token));
   }

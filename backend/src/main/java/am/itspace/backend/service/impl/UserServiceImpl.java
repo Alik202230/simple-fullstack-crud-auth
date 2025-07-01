@@ -1,5 +1,6 @@
 package am.itspace.backend.service.impl;
 
+import am.itspace.backend.dto.RefreshTokenResponse;
 import am.itspace.backend.dto.SaveUserRequest;
 import am.itspace.backend.dto.UserAuthRequest;
 import am.itspace.backend.dto.UserAuthResponse;
@@ -15,10 +16,14 @@ import am.itspace.backend.repository.TokenRepository;
 import am.itspace.backend.repository.UserRepository;
 import am.itspace.backend.service.UserService;
 import am.itspace.backend.utils.JwtTokenUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,15 +52,17 @@ public class UserServiceImpl implements UserService {
         .role(Role.USER)
         .build();
 
-    String jwtToken = jwtTokenUtil.generateToken(user.getEmail());
+    final String accessToken = jwtTokenUtil.generateToken(user.getEmail());
+    final String refreshToken = jwtTokenUtil.refreshToken(accessToken);
     User savedUser = this.userRepository.save(user);
 
-    saveUserToken(savedUser, jwtToken);
+    saveUserToken(savedUser, accessToken, refreshToken);
 
     UserAuthResponse.builder()
         .firstName(request.getFirstName())
         .lastName(request.getLastName())
-        .token(jwtToken)
+        .accessToken(accessToken)
+        .refreshToken(refreshToken)
         .build();
   }
 
@@ -72,32 +79,69 @@ public class UserServiceImpl implements UserService {
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
       throw new AuthorizationException("Wrong password or email");
 
-    final String jwtToken = jwtTokenUtil.generateToken(user.getEmail());
+    final String accessToken = jwtTokenUtil.generateToken(user.getEmail());
+    final String refreshToken = jwtTokenUtil.refreshToken(accessToken);
 
     UserAuthResponse response = UserConverter.toAuthResponse(user);
-    response.setToken(jwtToken);
 
+    response.setAccessToken(accessToken);
+    response.setRefreshToken(refreshToken);
     revokeAllUserTokens(user);
-    saveUserToken(user, jwtToken);
+    saveUserToken(user, accessToken, refreshToken);
 
     return Optional.of(response);
 
   }
 
+  @Override
+  public RefreshTokenResponse refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+    if (header == null && !header.startsWith("Bearer ")) {
+      return null;
+    }
+
+    String token = header.substring(7);
+    String username = jwtTokenUtil.getUsernameFromToken(token);
+
+    User user = userRepository.findByEmail(username)
+        .orElseThrow(() -> new UserNotFoundException("User with email " + username + " not found"));
+
+    if (jwtTokenUtil.validateToken(token, username)) {
+
+      final String accessToken = jwtTokenUtil.generateToken(user.getEmail());
+      final String refreshToken = jwtTokenUtil.refreshToken(accessToken);
+
+      revokeAllUserTokens(user);
+      saveUserToken(user, accessToken, refreshToken);
+
+      return RefreshTokenResponse.builder()
+          .accessToken(accessToken)
+          .refreshToken(refreshToken)
+          .statusCode(HttpServletResponse.SC_OK)
+          .build();
+    }
+
+    return null;
+  }
+
   public void revokeAllUserTokens(User user) {
     List<Token> validUserTokens = this.tokenRepository.findAllValidTokensByUserId(user.getId());
+
     if (validUserTokens.isEmpty()) return;
+
     validUserTokens.forEach(token -> {
       token.setRevoked(true);
       token.setExpired(true);
     });
+
     this.tokenRepository.saveAll(validUserTokens);
   }
 
-  public void saveUserToken(User user, String jwtToken) {
+  public void saveUserToken(User user, String accessToken, String refreshToken) {
     Token token = Token.builder()
         .user(user)
-        .token(jwtToken)
+        .accessToken(accessToken)
+        .refreshToken(refreshToken)
         .type(TokenType.BEARER)
         .isExpired(false)
         .revoked(false)
@@ -107,4 +151,3 @@ public class UserServiceImpl implements UserService {
   }
 
 }
-

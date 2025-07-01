@@ -17,8 +17,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+
+import static org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices.*;
 
 @Configuration
 @RequiredArgsConstructor
@@ -44,7 +48,7 @@ public class SecurityConfig {
             // Uncomment if you want to allow Swagger UI
             // .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
             // .requestMatchers("/v3/api-docs/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/user/login", "/user/register").permitAll()
+            .requestMatchers(HttpMethod.POST, "/user/login", "/user/register", "/user/refresh-token").permitAll()
             .requestMatchers(HttpMethod.GET, "/product/all", "/product/{id}").permitAll()
             .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
             .requestMatchers(HttpMethod.POST, "/cart/add").hasAuthority("USER")
@@ -55,6 +59,10 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.DELETE, "/product/delete/**").hasAuthority("ADMIN").anyRequest().authenticated()
         )
         .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+        .rememberMe(remember -> remember.key("nfownfownf")
+            .tokenValiditySeconds(233344)
+            .rememberMeParameter("remember-me")
+            .rememberMeCookieName("weomoefmeof"))
         .logout()
         .logoutUrl("/user/logout")
         .addLogoutHandler(logoutHandler)
@@ -62,6 +70,7 @@ public class SecurityConfig {
             SecurityContextHolder.clearContext());
     return httpSecurity.build();
   }
+
 
   @Bean
   public AuthenticationProvider authenticationProvider() {

@@ -39,7 +39,7 @@ public class CartServiceImpl implements CartService {
         cartItemService.addOrUpdateCartItem(cart, item.getProductId(), item.getQuantity()));
 
     List<CartItemResponse> items = cart.getCartItems().stream()
-        .map(CartItemConverter::toCartItemResponse)
+        .map(item -> CartItemConverter.toCartItemResponse(item))
         .toList();
 
 

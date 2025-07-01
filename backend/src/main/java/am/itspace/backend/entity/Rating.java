@@ -1,9 +1,6 @@
 package am.itspace.backend.entity;
 
-import am.itspace.backend.entity.enums.TokenType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,30 +13,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "token_tbl")
-public class Token {
+@Table(name = "rating_tbl")
+public class Rating {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private String accessToken;
-
-  private String refreshToken;
-
-  @Enumerated(EnumType.STRING)
-  private TokenType type;
-
-  private boolean isExpired;
-  private boolean revoked;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
+
+  @ManyToOne
+  @JoinColumn(name = "product_id")
+  private Product product;
+  private Double score;
+  private LocalDateTime timestamp;
 
 }

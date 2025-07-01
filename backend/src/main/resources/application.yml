@@ -18,8 +18,7 @@ spring:
       static-locations: /home/alik/fullstack/backend/upload/
 jwt:
   secret: YXNkZmYkIyNzZFNEU0RBQVNERksjQEBkc2ZqZGZrZHNqQEAjZHNmZ2ZnZmdeXiYmWipeJSQkI2RzZHMkIyVzZDQ1MDk5KUkjJCg5V0ZTSUo=
-  expiration: 600000
-
+  expiration: 86400000 # a day
 
 upload:
   image:

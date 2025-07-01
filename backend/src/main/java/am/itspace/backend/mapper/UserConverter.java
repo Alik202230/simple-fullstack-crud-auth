@@ -2,6 +2,7 @@ package am.itspace.backend.mapper;
 
 import am.itspace.backend.dto.UserAuthResponse;
 import am.itspace.backend.entity.User;
+import org.springframework.http.HttpStatus;
 
 public class UserConverter {
 
@@ -12,8 +13,9 @@ public class UserConverter {
         .userId(user.getId())
         .firstName(user.getFirstName())
         .lastName(user.getLastName())
-        .token(user.getEmail())
+        .accessToken(user.getEmail())
         .role(user.getRole())
+        .statusCode(HttpStatus.OK.value())
         .build();
   }
 
