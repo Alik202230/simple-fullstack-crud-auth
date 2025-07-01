@@ -2,7 +2,7 @@ package am.itspace.backend.controller;
 
 import am.itspace.backend.entity.Product;
 import am.itspace.backend.security.CurrentUser;
-import am.itspace.backend.service.impl.RecommendationService;
+import am.itspace.backend.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
