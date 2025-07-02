@@ -34,7 +34,8 @@ public class GlobalExceptionHandler {
       AuthorizationException.class,
       FileNotFountException.class,
       ProductNotFoundException.class,
-      AccessDeniedException.class
+      AccessDeniedException.class,
+      CartNotFoundException.class
   })
   public ResponseEntity<ErrorResponse> handleException(Exception exception) {
     return switch (exception) {
@@ -103,6 +104,16 @@ public class GlobalExceptionHandler {
             LocalDateTime.now()
         );
         yield ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+      }
+
+      case CartNotFoundException ex -> {
+        ErrorResponse errorResponse = new ErrorResponse(
+            ex.getMessage(),
+            HttpStatus.NOT_FOUND.value(),
+            HttpStatus.NOT_FOUND,
+            LocalDateTime.now()
+        );
+        yield ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
       }
 
       default -> {

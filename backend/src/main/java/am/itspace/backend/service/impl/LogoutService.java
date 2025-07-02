@@ -25,7 +25,7 @@ public class LogoutService implements LogoutHandler {
     }
     token = requestHeader.substring(7);
 
-    Token optionalToken = tokenRepository.findByToken(token)
+    Token optionalToken = tokenRepository.findByAccessToken(token)
         .orElse(null);
 
     if (optionalToken != null) {

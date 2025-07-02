@@ -6,7 +6,6 @@ import am.itspace.backend.entity.User;
 import am.itspace.backend.repository.ProductRepository;
 import am.itspace.backend.repository.RatingRepository;
 import am.itspace.backend.service.RecommendationService;
-import am.itspace.backend.utils.CosineSimilarityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

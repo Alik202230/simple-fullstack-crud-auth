@@ -67,8 +67,9 @@ public class CartServiceImpl implements CartService {
 
   @Override
   public CartResponse getCartByUser(CurrentUser user) {
-    Cart cart = cartRepository.findByUserId(user.getUser().getId())
-        .orElseThrow(() -> new CartNotFoundException("Cart not found"));
+    Long userId = user.getUser().getId();
+    Cart cart = cartRepository.findByUserIdWithItems(userId)
+        .orElseThrow(() -> new CartNotFoundException("Your cart is empty. Please add items to your cart"));
 
     List<CartItemResponse> items = cart.getCartItems().stream()
         .map(item -> CartItemConverter.toCartItemResponse(item))

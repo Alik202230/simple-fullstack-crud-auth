@@ -16,13 +16,14 @@ public class CorsConfig {
   private static final String PUT = "PUT";
   private static final String DELETE = "DELETE";
   private static final String OPTIONS = "OPTIONS";
+  private static final String ALL = "*";
 
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowedOrigins(List.of("http://localhost:4200"));
     config.setAllowedMethods(List.of(GET, POST, PUT, DELETE, OPTIONS));
-    config.setAllowedHeaders(List.of("*"));
+    config.setAllowedHeaders(List.of(ALL));
     config.setAllowCredentials(true);
     config.setMaxAge(3600L);
 
