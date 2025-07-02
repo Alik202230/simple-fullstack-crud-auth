@@ -57,6 +57,5 @@ public class CartItemServiceImpl implements CartItemService {
   @Override
   public void removeCartItem(Long productId, Cart cart) {
     cartItemRepository.removeProductFromCartByCartIdAndProductId(cart.getId(), productId);
-//    cart.getCartItems().removeIf(item -> item.getProduct().getId().equals(productId));
   }
 }
